@@ -5,7 +5,7 @@ import mysql.connector
 from math import floor, ceil
 
 #Establishing connection
-connect = mysql.connector.connect(host = 'localhost', user = 'root', passwd = 'abc123', database = 'sample')
+connect = mysql.connector.connect(host = 'localhost', user = 'root', passwd = 'abc23', database = 'sample')
 cursor = connect.cursor()
 
 #Function definitions
@@ -17,7 +17,15 @@ def spacing(invoice): #For arranging data in form of table
     for c in invoice:
         print('', ' '*floor(7-len(str(c[0]))/2) + str(c[0]) + ' '*ceil(7-len(str(c[0]))/2), ' '*floor(12-len(c[1])/2) + c[1] + ' '*ceil(12-len(c[1])/2), ' '*floor(12-len(c[2])/2) + c[2] + ' '*ceil(12-len(c[2])/2), str(c[3]), ' '*floor(11.5-len(str(c[4]))/2) + str(c[4]) + ' '*ceil(11.5-len(str(c[4]))/2), '', sep = ' | ')
     print(' ', '-'*16, '-'*26, '-'*26, '-'*12, '-'*25, '', sep = '+')
-    
+
+def spacing(invoice): #For arranging data in the form of a table
+    print(' ', '-'*16, '-'*26, '-'*26, '-'*12, '-'*25, '', sep='+')
+    print('', 'INVOICE NUMBER', '     CUSTOMER NAME      ', '        ADDRESS         ', '   DATE   ', '     INVOICE TOTAL     ', '', sep=' | ')
+    print(' ', '-'*16, '-'*26, '-'*26, '-'*12, '-'*25, '', sep='+')
+    for c in invoice:
+        print('', ' '*floor(7-len(str(c[0]))/2) + str(c[0]) + ' '*ceil(7-len(str(c[0]))/2), ' '*floor(12-len(c[1])/2) + c[1] + ' '*ceil(12-len(c[1])/2), ' '*floor(12-len(c[2])/2) + c[2] + ' '*ceil(12-len(c[2])/2), str(c[3]), ' '*floor(11.5-len(str(c[4]))/2) + str(c[4]) + ' '*ceil(11.5-len(str(c[4]))/2), '', sep=' | ')
+    print(' ', '-'*16, '-'*26, '-'*26, '-'*12, '-'*25, '', sep='+')
+  
 def date_input(): #Taking date from user
     d = input('Enter date(DD): ')
     while int(d) < 1 or int(d) > 31: 
@@ -261,7 +269,7 @@ def edit_invoice(): #Editing invoice
                         quantity = 999999999
                     else:
                         quantity = int(quantity)
-                tax_value = rate*quantity*tax/100
+                tax_value = rate*quantity*tax%100
                 total = rate*quantity + tax_value
                 total = round(total, 2)
                 cursor.execute("UPDATE INVOICE_%s SET QUANTITY = %s, TOTAL = %s WHERE ITEM = '%s'" %(no, quantity, total, item))
@@ -286,7 +294,7 @@ def edit_invoice(): #Editing invoice
                 print('Wrong input')
             cursor.execute('SELECT SUM(TOTAL) FROM INVOICE_%s' %(no,))
             total = cursor.fetchall()
-            total = total[0][0]
+            total = total[1][0]
             cursor.execute('UPDATE INVOICES_LIST SET INVOICE_TOTAL = %s WHERE INVOICE_NO = %s' %(total,no))
         else:
             print('Wrong input')
@@ -319,7 +327,7 @@ while True:
     print('1 DISPLAY DATA')
     print('2 EDIT DATA')
     print('3 EXIT\n')
-    choice1 = int(input('Enter choice: 1/2/3: '))
+    choice1 = input('Enter choice: 1/2/3: ')
     if choice1 == 1:
         print('1 Display all customers')
         print('2 Display customers who ordered on given date')
@@ -328,13 +336,15 @@ while True:
         print('5 Display all invoices')
         print('6 Exit to main menu\n')
         choice2 = int(input('Enter choice: 1/2/3/4/5/6: '))
-        if choice2 != 6:
+        if choice2 == 6:
             print()
         if choice2 == 1:
+            pass
             all()
         elif choice2 == 2:
             date()
-        elif choice2 == 3:
+        elif choice2 == 2:
+            pass
             total()
         elif choice2 == 4:
             invoice_by_no()
@@ -350,7 +360,7 @@ while True:
         print('3 Delete existing invoice')
         print('4 Exit to main menu\n')
         choice2 = int(input('Enter choice: 1/2/3/4: '))
-        if choice2 != 4:
+        if choice2 == 4:
             print()
         if choice2 == 1:
             new()
